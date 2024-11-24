@@ -50,55 +50,12 @@ if (isset($_SESSION['user_id']) &&
     header("Location: dashboard.php");
     exit;
 }
+
+$pageTitle = "Police Traffic Database - Login";
+require_once('header.php');
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Police Traffic Database</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="mvp.css">
-    <style>
-        /* Fallback styles with improved design */
-        .legacy-content {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .legacy-content form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .error-message {
-            color: #dc2626;
-            background: #fee2e2;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .login-help {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f3f4f6;
-            border-radius: 4px;
-        }
-        .login-help ul {
-            margin-top: 10px;
-            list-style: none;
-            padding-left: 0;
-        }
-        .login-help li {
-            margin: 5px 0;
-            font-family: monospace;
-        }
-    </style>
-</head>
-<body class="bg-gray-50">
+
+<div class="tw-min-h-screen tw-bg-gray-50 tw-flex tw-items-center tw-justify-center tw-px-4 tw-py-12">
     <!-- React root -->
     <div id="root"></div>
 
@@ -111,65 +68,82 @@ if (isset($_SESSION['user_id']) &&
         ]); ?>;
     </script>
 
-    <!-- React Build -->
-    <script type="module" src="js/index.js"></script>
-
     <!-- Enhanced fallback content -->
-    <div id="legacy-content" style="display: none;">
-        <div class="flex items-center justify-center mb-4">
-            <!-- Shield icon as SVG -->
-            <svg class="h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+    <div id="legacy-content" class="tw-w-full tw-max-w-md" style="display: none;">
+        <div class="card">
+            <div class="tw-flex tw-justify-center tw-mb-6">
+                <div class="tw-bg-blue-50 tw-p-3 tw-rounded-full">
+                    <svg class="tw-h-12 tw-w-12 tw-text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+            </div>
+            
+            <h1 class="tw-text-2xl tw-font-bold tw-text-center tw-mb-6">Police Traffic Database</h1>
+            
+            <?php if (isset($error_message)): ?>
+                <div class="tw-bg-red-50 tw-border tw-border-red-200 tw-rounded-md tw-p-4 tw-mb-6 tw-text-red-600">
+                    <?php echo htmlspecialchars($error_message); ?>
+                </div>
+            <?php endif; ?>
+            
+            <form method="POST" action="" class="tw-space-y-4">
+                <div>
+                    <label for="username" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        Username
+                    </label>
+                    <input type="text" 
+                           id="username" 
+                           name="username" 
+                           required 
+                           class="form-input tw-mt-1"
+                           value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
+                </div>
+                
+                <div>
+                    <label for="password" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        Password
+                    </label>
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           required
+                           class="form-input tw-mt-1">
+                </div>
+                
+                <button type="submit" class="btn tw-w-full">
+                    Login
+                </button>
+                
+                <div class="tw-bg-gray-50 tw-border tw-rounded-md tw-p-4 tw-mt-6">
+                    <p class="tw-text-sm tw-font-medium tw-text-gray-700 tw-text-center">Available accounts:</p>
+                    <div class="tw-mt-2 tw-space-y-2">
+                        <div class="tw-bg-white tw-p-2 tw-rounded-md tw-border tw-text-sm tw-text-center">
+                            Officer: <code class="tw-text-blue-600">mcnulty/plod123</code>
+                        </div>
+                        <div class="tw-bg-white tw-p-2 tw-rounded-md tw-border tw-text-sm tw-text-center">
+                            Officer: <code class="tw-text-blue-600">moreland/fuzz42</code>
+                        </div>
+                        <div class="tw-bg-white tw-p-2 tw-rounded-md tw-border tw-text-sm tw-text-center">
+                            Admin: <code class="tw-text-blue-600">daniels/copper99</code>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-        
-        <h1 class="text-2xl font-bold text-center mb-6">Police Traffic Database</h1>
-        
-        <?php if (isset($error_message)): ?>
-            <div class="error-message">
-                <?php echo htmlspecialchars($error_message); ?>
-            </div>
-        <?php endif; ?>
-        
-        <form method="POST" action="" class="space-y-4">
-            <div>
-                <label for="username" class="text-sm font-medium">Username:</label>
-                <input type="text" id="username" name="username" required 
-                       class="w-full px-3 py-2 border rounded-md mt-1"
-                       value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>">
-            </div>
-            
-            <div>
-                <label for="password" class="text-sm font-medium">Password:</label>
-                <input type="password" id="password" name="password" required
-                       class="w-full px-3 py-2 border rounded-md mt-1">
-            </div>
-            
-            <button type="submit" 
-                    class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
-                Login
-            </button>
-            
-            <div class="login-help mt-4 text-center text-sm text-gray-600">
-                <p class="font-medium">Available accounts:</p>
-                <ul class="mt-2 space-y-1">
-                    <li>Officer: <code class="text-blue-600">mcnulty/plod123</code></li>
-                    <li>Officer: <code class="text-blue-600">moreland/fuzz42</code></li>
-                    <li>Admin: <code class="text-blue-600">daniels/copper99</code></li>
-                </ul>
-            </div>
-        </form>
     </div>
+</div>
 
-    <script>
-        // Show fallback content if React fails to load
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                if (!document.querySelector('#root').children.length) {
-                    document.querySelector('#legacy-content').style.display = 'block';
-                }
-            }, 1000);
-        });
-    </script>
+<script type="module" src="/cw2/js/index.js"></script>
+<script>
+    // Show fallback content if React fails to load
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            if (!document.querySelector('#root').children.length) {
+                document.querySelector('#legacy-content').style.display = 'block';
+            }
+        }, 1000);
+    });
+</script>
 </body>
 </html>

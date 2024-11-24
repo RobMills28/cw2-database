@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn = getConnection();
         $stmt = $conn->prepare("
             INSERT INTO Incident 
-            (Vehicle_ID, People_ID, Incident_Date, Incident_Report, Offence_ID) 
+            (Vehicle_ID, People_ID, Incident_Date, Incident_Report, Offence_ID)
             VALUES (?, ?, ?, ?, ?)
         ");
         $stmt->execute([
@@ -41,81 +41,109 @@ try {
 } catch(PDOException $e) {
     $message = "Error loading data: " . $e->getMessage();
 }
+
+$pageTitle = "File New Report - Police Database";
+require_once('header.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="mvp.css">
-    <title>File New Report - Police Database</title>
-    <style>
-        form { max-width: 600px; margin: 0 auto; }
-        .message { color: green; margin: 1rem 0; }
-        .error { color: red; }
-    </style>
-</head>
-<body>
-    <main>
-        <nav>
-            <h1>File New Incident Report</h1>
-            <div>
-                <a href="dashboard.php">Dashboard</a>
-                <a href="logout.php">Logout</a>
-            </div>
-        </nav>
 
-        <?php if ($message): ?>
-            <p class="message"><?php echo htmlspecialchars($message); ?></p>
-        <?php endif; ?>
+<div class="tw-container tw-mx-auto tw-px-4 tw-py-8">
+    <!-- Navigation Header -->
+    <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+        <h1 class="tw-text-2xl tw-font-bold tw-text-gray-900">File New Incident Report</h1>
+        <div class="tw-space-x-4">
+            <a href="dashboard.php" class="tw-text-blue-600 hover:tw-text-blue-700">Dashboard</a>
+            <a href="logout.php" class="tw-text-blue-600 hover:tw-text-blue-700">Logout</a>
+        </div>
+    </div>
 
-        <form method="POST">
-            <div>
-                <label>Vehicle:</label>
-                <select name="vehicle_id" required>
-                    <option value="">Select Vehicle</option>
-                    <?php foreach ($vehicles as $vehicle): ?>
-                        <option value="<?php echo $vehicle['Vehicle_ID']; ?>">
-                            <?php echo htmlspecialchars($vehicle['Vehicle_plate'] . ' - ' . $vehicle['Vehicle_type']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+    <?php if ($message): ?>
+        <div class="<?php echo strpos($message, 'Error') !== false 
+            ? 'tw-bg-red-50 tw-text-red-600 tw-border-red-200' 
+            : 'tw-bg-green-50 tw-text-green-600 tw-border-green-200' ?> 
+            tw-border tw-rounded-md tw-p-4 tw-mb-6">
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+    <?php endif; ?>
 
-            <div>
-                <label>Person Involved:</label>
-                <select name="people_id" required>
-                    <option value="">Select Person</option>
-                    <?php foreach ($people as $person): ?>
-                        <option value="<?php echo $person['People_ID']; ?>">
-                            <?php echo htmlspecialchars($person['People_name'] . ' - ' . $person['People_licence']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+    <div class="tw-max-w-2xl tw-mx-auto">
+        <div class="card">
+            <form method="POST" class="tw-space-y-6">
+                <!-- Vehicle Selection -->
+                <div>
+                    <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                        Vehicle:
+                    </label>
+                    <select name="vehicle_id" required class="form-input">
+                        <option value="">Select Vehicle</option>
+                        <?php foreach ($vehicles as $vehicle): ?>
+                            <option value="<?php echo $vehicle['Vehicle_ID']; ?>">
+                                <?php echo htmlspecialchars($vehicle['Vehicle_plate'] . ' - ' . $vehicle['Vehicle_type']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div>
-                <label>Offence:</label>
-                <select name="offence_id" required>
-                    <option value="">Select Offence</option>
-                    <?php foreach ($offences as $offence): ?>
-                        <option value="<?php echo $offence['Offence_ID']; ?>">
-                            <?php echo htmlspecialchars($offence['Offence_description']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                <!-- Person Selection -->
+                <div>
+                    <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                        Person Involved:
+                    </label>
+                    <select name="people_id" required class="form-input">
+                        <option value="">Select Person</option>
+                        <?php foreach ($people as $person): ?>
+                            <option value="<?php echo $person['People_ID']; ?>">
+                                <?php echo htmlspecialchars($person['People_name'] . ' - ' . $person['People_licence']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div>
-                <label>Date:</label>
-                <input type="date" name="date" required>
-            </div>
+                <!-- Offence Selection -->
+                <div>
+                    <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                        Offence:
+                    </label>
+                    <select name="offence_id" required class="form-input">
+                        <option value="">Select Offence</option>
+                        <?php foreach ($offences as $offence): ?>
+                            <option value="<?php echo $offence['Offence_ID']; ?>">
+                                <?php echo htmlspecialchars($offence['Offence_description']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div>
-                <label>Statement:</label>
-                <textarea name="statement" required rows="4"></textarea>
-            </div>
+                <!-- Date Input -->
+                <div>
+                    <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                        Date:
+                    </label>
+                    <input type="date" name="date" required class="form-input">
+                </div>
 
-            <button type="submit">File Report</button>
-        </form>
-    </main>
+                <!-- Statement Textarea -->
+                <div>
+                    <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                        Statement:
+                    </label>
+                    <textarea 
+                        name="statement" 
+                        required 
+                        rows="4" 
+                        class="form-input"
+                    ></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit" class="btn tw-w-full">
+                        File Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

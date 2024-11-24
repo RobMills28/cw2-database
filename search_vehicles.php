@@ -32,36 +32,51 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
         $message = "Error performing search: " . $e->getMessage();
     }
 }
+
+$pageTitle = "Search Vehicles - Police Database";
+require_once('header.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="mvp.css">
-    <title>Search Vehicles</title>
-</head>
-<body>
-    <main>
-        <nav>
-            <h1>Vehicle Search</h1>
-            <ul>
-                <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </nav>
 
-        <form method="GET">
-            <label>Registration Number:</label>
-            <input type="text" name="search" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" 
-                   placeholder="Enter registration number">
-            <button type="submit">Search</button>
+<div class="tw-container tw-mx-auto tw-px-4 tw-py-8">
+    <!-- Header -->
+    <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+        <h1 class="tw-text-2xl tw-font-bold tw-text-gray-900">Vehicle Search</h1>
+        <div class="tw-space-x-4">
+            <a href="dashboard.php" class="tw-text-blue-600 hover:tw-text-blue-700">Dashboard</a>
+            <a href="logout.php" class="tw-text-blue-600 hover:tw-text-blue-700">Logout</a>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card tw-mb-8">
+        <form method="GET" class="tw-space-y-4">
+            <div>
+                <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                    Registration Number:
+                </label>
+                <div class="tw-flex tw-gap-4">
+                    <input type="text" 
+                           name="search" 
+                           value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>"
+                           placeholder="Enter registration number"
+                           class="form-input">
+                    <button type="submit" class="btn">
+                        Search
+                    </button>
+                </div>
+            </div>
         </form>
+    </div>
 
-        <?php if ($message): ?>
-            <p><?php echo htmlspecialchars($message); ?></p>
-        <?php endif; ?>
+    <?php if ($message): ?>
+        <div class="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded-md tw-p-4 tw-mb-6 tw-text-blue-600">
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+    <?php endif; ?>
 
-        <?php if (!empty($results)): ?>
-            <table>
+    <?php if (!empty($results)): ?>
+        <div class="tw-overflow-x-auto">
+            <table class="data-table">
                 <thead>
                     <tr>
                         <th>Registration</th>
@@ -74,16 +89,18 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
                 <tbody>
                     <?php foreach ($results as $vehicle): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($vehicle['Vehicle_plate']); ?></td>
+                            <td class="tw-font-medium"><?php echo htmlspecialchars($vehicle['Vehicle_plate']); ?></td>
                             <td><?php echo htmlspecialchars($vehicle['Vehicle_type']); ?></td>
                             <td><?php echo htmlspecialchars($vehicle['Vehicle_colour']); ?></td>
                             <td><?php echo htmlspecialchars($vehicle['owner_name'] ?? 'Unknown'); ?></td>
-                            <td><?php echo htmlspecialchars($vehicle['People_licence'] ?? 'N/A'); ?></td>
+                            <td class="tw-font-mono"><?php echo htmlspecialchars($vehicle['People_licence'] ?? 'N/A'); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        <?php endif; ?>
-    </main>
+        </div>
+    <?php endif; ?>
+</div>
+
 </body>
 </html>

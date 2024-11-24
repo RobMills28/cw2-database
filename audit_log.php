@@ -23,122 +23,83 @@ $query = "SELECT AuditLog.*, Officers.username as officer_username
           LEFT JOIN Officers ON AuditLog.officer_id = Officers.officer_id 
           ORDER BY timestamp DESC";
 $logs = $pdo->query($query)->fetchAll();
+
+$pageTitle = "Police Traffic Database - Audit Log";
+require_once('header.php');
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="mvp.css">
-    <title>Police Traffic Database - Audit Log</title>
-    <style>
-        body {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        .back-link {
-            text-decoration: none;
-            color: #666;
-        }
-        .card {
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .search-input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th {
-            background-color: #4a90e2;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        .timestamp {
-            white-space: nowrap;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>System Audit Log</h1>
-        <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
+<div class="tw-container tw-mx-auto tw-px-4 tw-py-8">
+    <!-- Header -->
+    <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+        <h1 class="tw-text-2xl tw-font-bold tw-text-gray-900">System Audit Log</h1>
+        <a href="dashboard.php" class="tw-text-blue-600 hover:tw-text-blue-700 tw-flex tw-items-center">
+            <span>← Back to Dashboard</span>
+        </a>
     </div>
 
+    <!-- Search and Table Card -->
     <div class="card">
-        <input type="text" 
-               id="searchInput" 
-               class="search-input" 
-               placeholder="Search logs..."
-               onkeyup="filterLogs()">
+        <div class="tw-mb-6">
+            <input type="text" 
+                   id="searchInput" 
+                   class="form-input"
+                   placeholder="Search logs..."
+                   onkeyup="filterLogs()">
+        </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th class="timestamp">Timestamp</th>
-                    <th>Officer</th>
-                    <th>Action</th>
-                    <th>Details</th>
-                </tr>
-            </thead>
-            <tbody id="logTableBody">
-                <?php if ($logs): ?>
-                    <?php foreach ($logs as $log): ?>
-                        <tr>
-                            <td class="timestamp">
-                                <?php echo date('Y-m-d H:i:s', strtotime($log['timestamp'])); ?>
-                            </td>
-                            <td><?php echo htmlspecialchars($log['officer_username']); ?></td>
-                            <td><?php echo htmlspecialchars($log['action']); ?></td>
-                            <td><?php echo htmlspecialchars($log['details']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
+        <div class="tw-overflow-x-auto">
+            <table class="data-table">
+                <thead>
                     <tr>
-                        <td colspan="4" style="text-align: center;">No audit logs found</td>
+                        <th class="tw-whitespace-nowrap">Timestamp</th>
+                        <th>Officer</th>
+                        <th>Action</th>
+                        <th>Details</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="logTableBody">
+                    <?php if ($logs): ?>
+                        <?php foreach ($logs as $log): ?>
+                            <tr>
+                                <td class="tw-whitespace-nowrap tw-font-medium">
+                                    <?php echo date('Y-m-d H:i:s', strtotime($log['timestamp'])); ?>
+                                </td>
+                                <td class="tw-font-medium">
+                                    <?php echo htmlspecialchars($log['officer_username']); ?>
+                                </td>
+                                <td>
+                                    <?php echo htmlspecialchars($log['action']); ?>
+                                </td>
+                                <td class="tw-max-w-xl">
+                                    <?php echo htmlspecialchars($log['details']); ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" class="tw-text-center tw-text-gray-500 tw-py-8">
+                                No audit logs found
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
+</div>
 
-    <script>
-    function filterLogs() {
-        const input = document.getElementById('searchInput');
-        const filter = input.value.toLowerCase();
-        const tbody = document.getElementById('logTableBody');
-        const rows = tbody.getElementsByTagName('tr');
+<script>
+function filterLogs() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const tbody = document.getElementById('logTableBody');
+    const rows = tbody.getElementsByTagName('tr');
 
-        for (let row of rows) {
-            const text = row.textContent || row.innerText;
-            row.style.display = text.toLowerCase().includes(filter) ? '' : 'none';
-        }
+    for (let row of rows) {
+        const text = row.textContent || row.innerText;
+        row.style.display = text.toLowerCase().includes(filter) ? '' : 'none';
     }
-    </script>
+}
+</script>
 </body>
 </html>

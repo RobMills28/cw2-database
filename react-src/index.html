@@ -5,9 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Police Traffic Database</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            prefix: 'tw-',
+            theme: {
+                extend: {
+                    colors: {
+                        blue: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        },
+                        gray: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            200: '#e5e7eb',
+                            600: '#4b5563',
+                            700: '#374151'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <div id="dashboard-root"></div>
+<body class="tw-bg-gray-50">
+    <div id="root"></div>
     <script type="module" src="/cw2/js/main.js"></script>
 </body>
 </html>

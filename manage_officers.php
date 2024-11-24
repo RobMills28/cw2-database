@@ -38,84 +38,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Get list of all officers
 $query = "SELECT * FROM Officers WHERE credentials = 'officer' ORDER BY officer_id";
 $officers = $pdo->query($query)->fetchAll();
+
+$pageTitle = "Manage Officers - Police Database";
+require_once('header.php');
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="mvp.css">
-    <title>Police Traffic Database - Manage Officers</title>
-    <style>
-        body {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        .card {
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .search-input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .button {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            margin: 5px 0;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        .back-link {
-            text-decoration: none;
-            color: #666;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 4px;
-            color: #155724;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Manage Officers</h1>
-        <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
+<div class="tw-container tw-mx-auto tw-px-4 tw-py-8">
+    <!-- Header -->
+    <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+        <h1 class="tw-text-2xl tw-font-bold tw-text-gray-900">Manage Officers</h1>
+        <a href="dashboard.php" class="tw-text-blue-600 hover:tw-text-blue-700">
+            ← Back to Dashboard
+        </a>
     </div>
 
     <?php if (isset($_SESSION['message'])): ?>
-        <div class="alert">
+        <div class="tw-bg-green-50 tw-border tw-border-green-200 tw-rounded-md tw-p-4 tw-mb-6 tw-text-green-600">
             <?php 
             echo $_SESSION['message'];
             unset($_SESSION['message']);
@@ -123,43 +61,55 @@ $officers = $pdo->query($query)->fetchAll();
         </div>
     <?php endif; ?>
 
-    <div class="card">
-        <h2>Add New Officer</h2>
-        <form method="POST" action="manage_officers.php">
+    <!-- Add New Officer Form -->
+    <div class="card tw-mb-8">
+        <h2 class="tw-text-xl tw-font-semibold tw-mb-6">Add New Officer</h2>
+        <form method="POST" action="manage_officers.php" class="tw-space-y-4">
             <div>
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" class="search-input" required>
+                <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                    Username:
+                </label>
+                <input type="text" id="username" name="username" class="form-input" required>
             </div>
             
             <div>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="search-input" required>
+                <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                    Password:
+                </label>
+                <input type="password" id="password" name="password" class="form-input" required>
             </div>
             
-            <button type="submit" name="add_officer" class="button">Add Officer</button>
+            <button type="submit" name="add_officer" class="btn">
+                Add Officer
+            </button>
         </form>
     </div>
 
+    <!-- Officers List -->
     <div class="card">
-        <h2>Current Officers</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Officer ID</th>
-                    <th>Username</th>
-                    <th>Credentials</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($officers as $officer): ?>
+        <h2 class="tw-text-xl tw-font-semibold tw-mb-6">Current Officers</h2>
+        <div class="tw-overflow-x-auto">
+            <table class="data-table">
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($officer['officer_id']); ?></td>
-                        <td><?php echo htmlspecialchars($officer['username']); ?></td>
-                        <td><?php echo htmlspecialchars($officer['credentials']); ?></td>
+                        <th>Officer ID</th>
+                        <th>Username</th>
+                        <th>Credentials</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($officers as $officer): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($officer['officer_id']); ?></td>
+                            <td><?php echo htmlspecialchars($officer['username']); ?></td>
+                            <td><?php echo htmlspecialchars($officer['credentials']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
+</div>
+
 </body>
 </html>

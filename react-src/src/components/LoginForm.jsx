@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield } from 'lucide-react';
 
 const LoginForm = ({ onLogin }) => {
@@ -16,7 +14,8 @@ const LoginForm = ({ onLogin }) => {
       formData.append('username', username);
       formData.append('password', password);
 
-      const response = await fetch('index.php', {
+      // Just use the current URL as the endpoint
+      const response = await fetch(window.location.href, {
         method: 'POST',
         body: formData,
         headers: {
@@ -29,19 +28,22 @@ const LoginForm = ({ onLogin }) => {
       if (data.success) {
         onLogin(data.user);
       } else {
-        setError('Invalid username or password');
+        setError(data.message || 'Invalid username or password');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
+      console.error('Login error:', err);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-4">
-            <Shield className="h-12 w-12 text-blue-600" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-2">
+          <div className="flex justify-center">
+            <div className="bg-blue-50 p-3 rounded-full">
+              <Shield className="h-12 w-12 text-blue-600" />
+            </div>
           </div>
           <CardTitle className="text-2xl font-bold text-center">
             Police Traffic Database
@@ -50,7 +52,7 @@ const LoginForm = ({ onLogin }) => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium">
+              <label htmlFor="username" className="block text-sm font-medium">
                 Username
               </label>
               <input
@@ -58,12 +60,12 @@ const LoginForm = ({ onLogin }) => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
+              <label htmlFor="password" className="block text-sm font-medium">
                 Password
               </label>
               <input
@@ -71,26 +73,36 @@ const LoginForm = ({ onLogin }) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
+            
             {error && (
-              <div className="text-red-500 text-sm text-center">{error}</div>
+              <div className="text-red-600 text-sm text-center p-2 bg-red-50 rounded-md border border-red-100">
+                {error}
+              </div>
             )}
+            
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+              className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               Login
             </button>
-            
-            <div className="mt-4 text-center text-sm text-gray-600">
-              <p>Available accounts:</p>
-              <div className="mt-2 space-y-1">
-                <p><code>mcnulty/plod123</code> - Officer</p>
-                <p><code>moreland/fuzz42</code> - Officer</p>
-                <p><code>daniels/copper99</code> - Administrator</p>
+
+            <div className="mt-6 p-4 bg-gray-50 rounded-md border">
+              <p className="text-sm font-medium text-center mb-2">Available accounts:</p>
+              <div className="space-y-2">
+                <div className="bg-white p-2 rounded-md border">
+                  <code className="text-sm">mcnulty/plod123</code> - Officer
+                </div>
+                <div className="bg-white p-2 rounded-md border">
+                  <code className="text-sm">moreland/fuzz42</code> - Officer
+                </div>
+                <div className="bg-white p-2 rounded-md border">
+                  <code className="text-sm">daniels/copper99</code> - Administrator
+                </div>
               </div>
             </div>
           </form>
@@ -100,4 +112,4 @@ const LoginForm = ({ onLogin }) => {
   );
 };
 
-export { LoginForm }; 
+export { LoginForm };

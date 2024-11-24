@@ -34,172 +34,81 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
         $message = "Error performing search: " . $e->getMessage();
     }
 }
+
+$pageTitle = "Search People - Police Database";
+require_once('header.php');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="mvp.css">
-    <title>Search People - Police Database</title>
-    <style>
-        body {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
 
-        .header {
-            display: flex;
-            justify-content: flex-end;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-
-        .header a {
-            color: purple;
-            text-decoration: none;
-            margin-left: 15px;
-        }
-
-        .search-container {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .search-container label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .search-container input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-
-        .search-button {
-            background-color: #4285f4;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .search-button:hover {
-            background-color: #357abd;
-        }
-
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .results-table th {
-            background-color: #4285f4;
-            color: white;
-            text-align: left;
-            padding: 15px;
-            font-weight: 500;
-        }
-
-        .results-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .results-table tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        .results-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Fixed column widths */
-        .results-table th:nth-child(1), 
-        .results-table td:nth-child(1) { width: 20%; }
-        .results-table th:nth-child(2), 
-        .results-table td:nth-child(2) { width: 20%; }
-        .results-table th:nth-child(3), 
-        .results-table td:nth-child(3) { width: 35%; }
-        .results-table th:nth-child(4), 
-        .results-table td:nth-child(4) { width: 15%; }
-        .results-table th:nth-child(5), 
-        .results-table td:nth-child(5) { width: 10%; }
-
-        /* Message styling */
-        .message {
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="logout.php">Logout</a>
+<div class="tw-container tw-mx-auto tw-px-4 tw-py-8">
+    <!-- Header -->
+    <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+        <h1 class="tw-text-2xl tw-font-bold tw-text-gray-900">Search People</h1>
+        <div class="tw-space-x-4">
+            <a href="dashboard.php" class="tw-text-blue-600 hover:tw-text-blue-700">Dashboard</a>
+            <a href="logout.php" class="tw-text-blue-600 hover:tw-text-blue-700">Logout</a>
+        </div>
     </div>
 
-    <div class="search-container">
-        <form method="GET">
-            <label>Name or License Number:</label>
-            <input type="text" 
-                   name="search" 
-                   value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>"
-                   placeholder="Enter name or license number">
-            <button type="submit" class="search-button">Search</button>
+    <!-- Search Form -->
+    <div class="card tw-mb-8">
+        <form method="GET" class="tw-space-y-4">
+            <div>
+                <label class="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-2">
+                    Name or License Number:
+                </label>
+                <div class="tw-flex tw-gap-4">
+                    <input type="text" 
+                           name="search" 
+                           value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>"
+                           placeholder="Enter name or license number"
+                           class="form-input">
+                    <button type="submit" class="btn">
+                        Search
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
 
     <?php if ($message): ?>
-        <div class="message">
+        <div class="tw-bg-blue-50 tw-border tw-border-blue-200 tw-rounded-md tw-p-4 tw-mb-6 tw-text-blue-600">
             <?php echo htmlspecialchars($message); ?>
         </div>
     <?php endif; ?>
 
     <?php if (!empty($results)): ?>
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>License Number</th>
-                    <th>Address</th>
-                    <th>Vehicles</th>
-                    <th>Incidents</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($results as $person): ?>
+        <div class="tw-overflow-x-auto">
+            <table class="data-table">
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($person['People_name']); ?></td>
-                        <td><?php echo htmlspecialchars($person['People_licence']); ?></td>
-                        <td><?php echo htmlspecialchars($person['People_address']); ?></td>
-                        <td><?php 
-                            if (!empty($person['vehicles'])) {
-                                echo htmlspecialchars($person['vehicles']);
-                            } else {
-                                echo 'None registered';
-                            }
-                        ?></td>
-                        <td>No incidents recorded</td>
+                        <th>Name</th>
+                        <th>License Number</th>
+                        <th>Address</th>
+                        <th>Vehicles</th>
+                        <th>Incidents</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($results as $person): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($person['People_name']); ?></td>
+                            <td class="tw-font-mono"><?php echo htmlspecialchars($person['People_licence']); ?></td>
+                            <td><?php echo htmlspecialchars($person['People_address']); ?></td>
+                            <td><?php 
+                                if (!empty($person['vehicles'])) {
+                                    echo htmlspecialchars($person['vehicles']);
+                                } else {
+                                    echo '<span class="tw-text-gray-500">None registered</span>';
+                                }
+                            ?></td>
+                            <td><span class="tw-text-gray-500">No incidents recorded</span></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php endif; ?>
+</div>
+
 </body>
 </html>

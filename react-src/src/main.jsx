@@ -1,16 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Dashboard } from './components/Dashboard';
+import App from './App';
+import './index.css';
 
-// Get the user data that was passed from PHP
-const userData = window.USER_DATA || {
-  userId: null,
-  username: null,
-  isAdmin: false
-};
+const rootElement = document.getElementById('root') || document.createElement('div');
+if (!rootElement.id) {
+  rootElement.id = 'root';
+  document.body.appendChild(rootElement);
+}
 
-ReactDOM.createRoot(document.getElementById('dashboard-root')).render(
+const root = ReactDOM.createRoot(rootElement);
+root.render(
   <React.StrictMode>
-    <Dashboard user={userData} />
+    <App />
   </React.StrictMode>
 );
+
+// Hide legacy content if React loads successfully
+const legacyContent = document.getElementById('legacy-content');
+if (legacyContent) {
+  legacyContent.style.display = 'none';
+}
